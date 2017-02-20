@@ -502,7 +502,7 @@ open class DriverDSL(
             else
                 ""
 
-            val inheritedProperties = listOf("amq.delivery.delay.ms")
+            val inheritedProperties = listOf("corda.version", "amq.delivery.delay.ms")
 
             val systemArgs = mutableMapOf(
                     "name" to nodeConf.myLegalName,
