@@ -1,5 +1,6 @@
 package net.corda.testing.node
 
+import com.google.common.net.HostAndPort
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import net.corda.core.createDirectories
@@ -15,7 +16,6 @@ import net.corda.node.services.config.FullNodeConfiguration
 import net.corda.node.services.transactions.RaftValidatingNotaryService
 import net.corda.node.utilities.ServiceIdentityGenerator
 import net.corda.testing.freeLocalHostAndPort
-import net.corda.testing.getFreeLocalPorts
 import org.junit.After
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -89,20 +89,27 @@ abstract class NodeBasedTest {
                 notaryName)
 
         val serviceInfo = ServiceInfo(serviceType, notaryName)
-        val nodeAddresses = getFreeLocalPorts("localhost", clusterSize).map { it.toString() }
+
+        val nodePorts = listOf(11000, 11010, 11020, 11030, 11040, 11050)
+
+        val nodeAddresses = nodePorts.take(clusterSize).map { HostAndPort.fromParts("localhost", it).toString() }
+
+//        val nodeAddresses = getFreeLocalPorts("localhost", clusterSize).map { it.toString() }
 
         val masterNodeFuture = startNode(
                 "$notaryName-0",
                 advertisedServices = setOf(serviceInfo),
-                configOverrides = mapOf("notaryNodeAddress" to nodeAddresses[0]))
+                configOverrides = mapOf("notaryNodeAddress" to nodeAddresses[0],
+                        "notaryClusterAddresses" to nodeAddresses))
 
         val remainingNodesFutures = (1 until clusterSize).map {
+            Thread.sleep(1000)
             startNode(
                     "$notaryName-$it",
                     advertisedServices = setOf(serviceInfo),
                     configOverrides = mapOf(
                             "notaryNodeAddress" to nodeAddresses[it],
-                            "notaryClusterAddresses" to listOf(nodeAddresses[0])))
+                            "notaryClusterAddresses" to nodeAddresses))
         }
 
         return Futures.allAsList(remainingNodesFutures).flatMap { remainingNodes ->
