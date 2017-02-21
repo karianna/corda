@@ -4,7 +4,6 @@ import com.google.common.net.HostAndPort
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import com.typesafe.config.ConfigFactory.empty
 import net.corda.core.crypto.composite
 import net.corda.core.crypto.generateKeyPair
 import net.corda.core.messaging.Message
@@ -14,7 +13,6 @@ import net.corda.core.node.services.DEFAULT_SESSION_ID
 import net.corda.core.utilities.LogHelper
 import net.corda.node.services.RPCUserService
 import net.corda.node.services.RPCUserServiceImpl
-import net.corda.node.services.config.FullNodeConfiguration
 import net.corda.node.services.config.NodeConfiguration
 import net.corda.node.services.config.configureWithDevSSLCertificate
 import net.corda.node.services.network.InMemoryNetworkMapCache
@@ -68,7 +66,7 @@ class ArtemisMessagingTests {
     @Before
     fun setUp() {
         val baseDirectory = temporaryFolder.root.toPath()
-        userService = RPCUserServiceImpl(FullNodeConfiguration(baseDirectory, empty()))
+        userService = RPCUserServiceImpl(emptyList())
         config = TestNodeConfiguration(
                 baseDirectory = baseDirectory,
                 myLegalName = "me",

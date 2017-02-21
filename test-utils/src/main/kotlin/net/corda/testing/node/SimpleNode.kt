@@ -27,7 +27,7 @@ class SimpleNode(val config: NodeConfiguration, val address: HostAndPort = freeL
 
     private val databaseWithCloseable: Pair<Closeable, Database> = configureDatabase(config.dataSourceProperties)
     val database: Database get() = databaseWithCloseable.second
-    val userService = RPCUserServiceImpl(config)
+    val userService = RPCUserServiceImpl(config.rpcUsers)
     val identity: KeyPair = generateKeyPair()
     val executor = ServiceAffinityExecutor(config.myLegalName, 1)
     val broker = ArtemisMessagingServer(config, address, InMemoryNetworkMapCache(), userService)

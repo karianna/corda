@@ -17,6 +17,7 @@ import net.corda.core.utilities.DUMMY_NOTARY
 import net.corda.core.utilities.DUMMY_NOTARY_KEY
 import net.corda.node.internal.AbstractNode
 import net.corda.node.internal.NetworkMapInfo
+import net.corda.node.services.User
 import net.corda.node.services.config.NodeConfiguration
 import net.corda.node.services.statemachine.FlowStateMachineImpl
 import net.corda.node.utilities.AddOrRemove.ADD
@@ -153,6 +154,7 @@ data class TestNodeConfiguration(
         override val networkMapService: NetworkMapInfo?,
         override val keyStorePassword: String = "cordacadevpass",
         override val trustStorePassword: String = "trustpass",
+        override val rpcUsers: List<User> = emptyList(),
         override val dataSourceProperties: Properties = makeTestDataSourceProperties(myLegalName),
         override val nearestCity: String = "Null Island",
         override val emailAddress: String = "",
